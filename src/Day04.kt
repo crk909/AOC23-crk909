@@ -1,12 +1,8 @@
-import java.lang.Error
 import kotlin.math.pow
 
 fun main() {
     fun getMatches(cardNums: List<Int>, winningNums: List<Int>): Int {
-        val numMatches = cardNums.map { num ->
-            if (num in winningNums) true
-            else false
-        }.filter { it }.size
+        val numMatches = cardNums.map { num -> num in winningNums}.filter { it }.size
         return numMatches
     }
 
