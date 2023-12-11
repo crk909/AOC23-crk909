@@ -9,15 +9,30 @@ fun main() {
         return walkSequence[stepsTaken%walkSequence.size]
     }
 
-    fun walkToDest(walkSequence: CharArray, sideMap: Map<String, Pair<String,String>>) :Int {
+    fun walkToDest(startLocation: String, walkSequence: CharArray, sideMap: Map<String, Pair<String,String>>) :Int {
         var stepsTaken = 0
-        var location = "AAA"
-        val destination = "ZZZ"
+        var location = startLocation
 
-        while (location != destination){
+        while (!location.endsWith("Z")){
             val whichStep = getNextStep(walkSequence, stepsTaken)
             val sideOptions = sideMap.getOrDefault(location, Pair<String,String>("A","A"))
-            ("$location: $sideOptions $whichStep").println()
+//            ("$location: $sideOptions $whichStep").println()
+            stepsTaken++
+            location = getNextLocation(sideOptions, whichStep)
+        }
+//        location.println()
+        return stepsTaken
+    }
+
+    fun walkToDestTest(startLocation: String, walkSequence: CharArray, sideMap: Map<String, Pair<String,String>>) :Int {
+        var stepsTaken = 0
+        var location = startLocation
+        while (stepsTaken < 1000000) {
+            if(location.endsWith("Z")){
+//                ("$location $stepsTaken").println()
+            }
+            val whichStep = getNextStep(walkSequence, stepsTaken)
+            val sideOptions = sideMap.getOrDefault(location, Pair<String,String>("A","A"))
             stepsTaken++
             location = getNextLocation(sideOptions, whichStep)
         }
@@ -32,30 +47,25 @@ fun main() {
         val sideMap = processedMapInput.map { it[0][0] to Pair<String,String>(it[1][0], it[1][1]) }.toMap()
         sideMap.println()
 
-
-        return walkToDest( sideSequence, sideMap)
-    }
-    fun ghostWalking(locations: List<String>): Boolean {
-        return !locations.all { it.endsWith("Z") }
+        return walkToDest( "AAA", sideSequence, sideMap)
     }
 
-    fun walkToDestGhost(startLocations: List<String>, walkSequence: CharArray, sideMap: Map<String, Pair<String,String>>): Int {
-        var stepsTaken = 0
-        var curLocations = startLocations
-
-        while (ghostWalking(curLocations)){
-            val whichStep = getNextStep(walkSequence, stepsTaken)
-            var sideOptions = curLocations.map { sideMap.getOrDefault(it, Pair<String,String>("A","A")) }
-//            sideOptions.println()
-            stepsTaken += 1
-            curLocations = sideOptions.map { getNextLocation(it, whichStep) }
-
+    fun greatestCommon(a: Long, b:Long): Long {
+        var at = a
+        var bt = b
+        while (bt != 0.toLong()){
+            var newa = bt
+            bt = at%bt
+            at = newa
         }
-
-        return stepsTaken
+        return at
     }
 
-    fun part2(input: List<String>): Int {
+    fun lowestCommon(a:Long, b: Long): Long {
+        return ((a*b)/greatestCommon(a,b))
+    }
+
+    fun part2(input: List<String>): Long {
         val sideSequence = input[0].strip().toCharArray()
         val mapInputs = input.slice(2..<input.size).map { it.replace("[()]".toRegex(), "") }
         val processedMapInput = mapInputs.map { it.split(" = ").map { inner -> inner.split(", ") } }
@@ -66,7 +76,10 @@ fun main() {
         val starts = sideMap.keys.filter { it.endsWith("A") }
         starts.println()
 
-        return walkToDestGhost(starts, sideSequence, sideMap)
+        val walkLengths = starts.map { walkToDest(it, sideSequence, sideMap).toLong() }
+        walkLengths.println()
+
+        return walkLengths.reduce{acc, i -> lowestCommon(acc, i)}
     }
 
     // test if implementation meets criteria from the description, like:
@@ -79,8 +92,9 @@ fun main() {
 
 
     val input = readInput("Day08")
-//    part1(input).println()
+    part1(input).println()
     part2(input).println()
+
 }
 
 

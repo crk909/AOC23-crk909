@@ -8,6 +8,8 @@ fun main() {
     }
 
     fun convertWithMap(whip: Long, map: List<List<Long>>): Long {
+        whip.println()
+        map.println()
         map.forEach {
             if (whip >= it[0] && whip <= it[1]) return whip + it[2]
         }
@@ -34,7 +36,9 @@ fun main() {
         //Section 2-8 -> Maps
         val maps = sections.slice(2..8).map { it.split(" ").map { num -> num.toLongOrNull() }.filterNotNull().chunked(3) }
 
+
         val convertedMaps = maps.map { it.map{ unit -> convertToRange(unit) } }
+        convertedMaps.println()
 
 //        seeds.map { seed -> convertWithMap(seed, convertedMaps[0]) }.println()
         //Same for next maps
@@ -147,7 +151,7 @@ fun main() {
     "\n\n\n\n".println()
 
     val input = readInput("Day05")
-    part1(input).println()
+//    part1(input).println()
 
     "\n\n\n\n".println()
 
