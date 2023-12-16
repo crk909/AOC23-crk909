@@ -3,17 +3,21 @@ import kotlin.math.max
 
 fun main() {
     fun beatsRecord(time: Long, record: Long, charge: Long): Boolean {
-        // 10 * (20) = 200
         return ((charge * (time-charge)) > record )
     }
 
+    fun noMidPoint(firstTime: Long, secondTime: Long) = (firstTime - secondTime).absoluteValue == 1.toLong()
+
     fun FindBoundaryTime(firstTime: Long, secondTime: Long, maxTime: Long, record: Long): Long{
-        (firstTime.toString() + " " + secondTime.toString()).println()
+        //Base Cases
+        ("$firstTime - $secondTime").println()
         if (firstTime == secondTime) return firstTime;
-        if ((firstTime - secondTime).absoluteValue == 1.toLong()) {
+        if (noMidPoint(firstTime, secondTime)) {
             if (beatsRecord(maxTime, record, firstTime)) return firstTime
             else return secondTime
         }
+
+        //Binary search
         val midTime = (firstTime + secondTime).floorDiv(2)
         if (beatsRecord(maxTime, record, midTime)) return FindBoundaryTime(firstTime, midTime, maxTime, record)
         return FindBoundaryTime(midTime,secondTime, maxTime, record)
